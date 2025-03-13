@@ -1564,49 +1564,10 @@ FUNCTION {is.in.url}
 }
 
 FUNCTION {format.doi}
-{ ""
-  doi empty$ not
-    { "" 's :=
-      doi 't :=
-      #0 'numnames :=
-        { t empty$ not}
-        { t #1 #1 substring$ 'tmp.str :=
-          tmp.str "," = tmp.str " " = or t #2 #1 substring$ empty$ or
-            { t #2 #1 substring$ empty$
-                { s tmp.str * 's := }
-                'skip$
-              if$
-              s empty$ s is.in.url or
-                'skip$
-                { numnames #1 + 'numnames :=
-                  numnames #1 >
-                    { ", " * }
-                    { "DOI: " * }
-                  if$
-                  "\doi{" s * "}" * *
-                }
-              if$
-              "" 's :=
-            }
-            { s tmp.str * 's := }
-          if$
-          t #2 global.max$ substring$ 't :=
-        }
-      while$
-    }
-    'skip$
-  if$
-}
+{ "" }
 
 FUNCTION {output.doi}
-{ doi empty$ not show.doi and
-  show.english.translation entry.lang lang.zh = and not and
-    { new.block
-      format.doi output
-    }
-    'skip$
-  if$
-}
+{ skip$ }
 
 FUNCTION {check.electronic}
 { "" 'entry.url :=
@@ -2511,6 +2472,16 @@ FUNCTION {presort}
   sort.label *
   #1 entry.max$ substring$
   'sort.key$ :=
+  entry.lang lang.zh =
+    { "1" }  % 中文文献优先级最高
+    { entry.lang lang.en =
+        { "2" }  % 英文文献优先级次之
+        { "3" }  % 其他语言
+      if$
+    }
+  if$
+  *
+  sort.key$ *
 }
 
 STRINGS { longest.label last.label next.extra last.extra.label }
